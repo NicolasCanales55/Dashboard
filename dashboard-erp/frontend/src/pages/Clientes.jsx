@@ -1,61 +1,57 @@
+import { useEffect, useState } from "react"
 import Table from "../components/Table"
+import { getClientes } from "../services/clientesService"
 
 const columns = [
-    "Nombre",
-    "Email",
-    "Teléfono",
-    "Estado",
-    "Acciones"
+  "Nombre",
+  "Email",
+  "Teléfono",
+  "Estado",
+  "Acciones"
 ]
 
-const clientes = [
-    {
-        nombre: "Nicolás Canales",
-        email: "nicolas@correo.com",
-        telefono: "+56 9 1234 1234",
-        estado: "Activo"
-    },
-    {
-        nombre: "Mario Castañeda",
-        email: "mario@correo.com",
-        telefono: "+56 9 2345 2345",
-        estado: "Activo"
-    },
-    {
-        nombre: "Mes Si",
-        email: "messi@correo.com",
-        telefono: "+56 9 3456 3456",
-        estado: "Activo"
-    },
-    {
-        nombre: "Manolo Manolín",
-        email: "manolo@correo.com",
-        telefono: "+56 9 4567 4567",
-        estado: "Inactivo"
-    },
-]
+function Clientes() {
+  const [clientes, setClientes] = useState([])
+  const [loading, setLoading] = useState(true)
 
-function Clientes(){
-    return(
-        <div className="p-8">
-            <div className="flex items-center justify-between mb-8">
-                <div className="p-8">
-                    <h1 className="text-4x1 font-bold text-white">
-                        Clientes
-                    </h1>
-                    <p className="text-4x1 font-bold text-white">
-                        Gestiona tus clientes
-                    </p>
-                </div>
+  useEffect(() => {
+    cargarClientes()
+  }, [])
 
-                <button className="bg-indigo-600 hover:bg-indigo-500 px-5 py-3 rounded-x1 text-white font-medium transition">
-                    Nuevo Cliente
-                </button>
-            </div>
+  const cargarClientes = async () => {
+    const data = await getClientes()
+    setClientes(data)
+    setLoading(false)
+  }
 
-            <Table columns={columns} data={clients}></Table>
-        </div>
+  if (loading) {
+    return (
+      <div className="p-8 text-white">
+        Cargando clientes...
+      </div>
     )
+  }
+
+  return (
+    <div className="p-8">
+      <div className="flex justify-between items-center mb-8">
+        <div>
+          <h1 className="text-4xl font-bold text-white">
+            Clientes
+          </h1>
+          <p className="text-zinc-400">
+            Gestión de clientes del sistema
+          </p>
+        </div>
+
+        <button className="bg-indigo-600 hover:bg-indigo-500 px-5 py-3 rounded-xl text-white">
+          Nuevo Cliente
+        </button>
+      </div>
+
+      <Table columns={columns} data={clientes} />
+    </div>
+  )
 }
 
 export default Clientes
